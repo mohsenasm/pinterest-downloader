@@ -20,6 +20,7 @@ def free_text(update, context):
     with open(laptop_image_path, 'rb') as f:
         bot.send_sticker(update.message.chat_id, f)
     file_paths, download_dir = download_link(update.message.text)
+    log_text("file_paths: " + str(file_paths), bot)
     for file_path in file_paths:
         log_text("sending: " + str(file_path), bot)
         with open(file_path, 'rb') as f:
