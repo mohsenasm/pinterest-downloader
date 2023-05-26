@@ -4,9 +4,9 @@ from threading import Thread
 from telegram import Bot
 from telegram.ext import Dispatcher, MessageHandler, Updater, CommandHandler, filters
 from configs import *
-import pathlib, glob, random
+import glob, random
 from datetime import datetime
-
+from pinterest_caller import download_link
 
 def start(update, context):
     bot = context.bot
@@ -14,13 +14,17 @@ def start(update, context):
 
 def free_text(update, context):
     bot = context.bot
-
     laptop_image_path = random.choice(glob.glob("./laptop_images/*"))
-    log_text(str(laptop_image_path), bot)
     with open(laptop_image_path, 'rb') as f:
         bot.send_sticker(update.message.chat_id, f)
-    
-    # todo: send pin image
+    files, download_dir = download_link(update.message.text)
+    for file in files:
+        log_text("sending: " + str(file), bot)
+        with open(file, 'rb') as f:
+            bot.send_document(update.message.chat_id, f)
+    log_text("removing: " + download_dir, bot)
+    os.rmdir(download_dir)
+    log_text("removed: " + download_dir, bot)
 
 def echo(update, context):
     bot = context.bot
