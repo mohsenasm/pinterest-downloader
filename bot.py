@@ -10,6 +10,7 @@ from pinterest_caller import download_link
 from pathlib import Path
 import shutil
 import re
+import time
 
 def start(update, context):
     bot = context.bot
@@ -33,9 +34,12 @@ def free_text(update, context):
             # log_text("sending: " + str(file_path), bot)
             with open(file_path, 'rb') as f:
                 bot.send_document(update.message.chat_id, document=f, filename=Path(file_path).name)
-        # log_text("removing: " + download_dir, bot)
-        shutil.rmtree(download_dir)
-        # log_text("removed: " + download_dir, bot)
+        # log_text("removing after 10min: " + download_dir, bot)
+        Thread(delyed_remove_dir, args=(10*60, download_dir)).start()
+
+def delyed_remove_dir(delay, dir):
+    time.sleep(delay)
+    shutil.rmtree(dir)
 
 def echo(update, context):
     bot = context.bot
