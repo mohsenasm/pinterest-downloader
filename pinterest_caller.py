@@ -10,6 +10,6 @@ def download_link(link):
     req_id = uuid.uuid4().hex
     download_dir = '/tmp/images_' + req_id
     pin_dl.run_library_main(link, download_dir, 0, -1, False, False, False, False, False, False, False, False, None, None, None)
-    files = glob.glob("./laptop_images/*."+extensions)
-    return files, download_dir
+    file_paths = glob.glob("./laptop_images/*."+extensions)
+    return file_paths, download_dir
     
