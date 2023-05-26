@@ -35,7 +35,7 @@ def free_text(update, context):
             with open(file_path, 'rb') as f:
                 bot.send_document(update.message.chat_id, document=f, filename=Path(file_path).name)
         # log_text("removing after 10min: " + download_dir, bot)
-        Thread(delyed_remove_dir, args=(10*60, download_dir)).start()
+        Thread(target=delyed_remove_dir, args=(10*60, download_dir)).start()
 
 def delyed_remove_dir(delay, dir):
     time.sleep(delay)
