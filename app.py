@@ -1,6 +1,6 @@
 import os
 import bot
-from flask import Flask, request, send_from_directory, redirect
+from flask import Flask, request
 from telegram import Update
 from configs import BOT_SECRET, PORT, WEBHOOK_BASE_URL
 

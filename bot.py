@@ -1,7 +1,7 @@
 import os
 from queue import Queue
 from threading import Thread
-from telegram import Bot, ParseMode
+from telegram import Bot
 from telegram.ext import Dispatcher, MessageHandler, Updater, CommandHandler, filters
 from configs import *
 import pathlib, glob, random
@@ -14,7 +14,12 @@ def start(update, context):
 
 def free_text(update, context):
     bot = context.bot
-    bot.send_photo(update.message.chat_id, photo=pathlib.Path(random.choice(glob.glob("./laptop_images/*"))))
+
+    laptop_image_path = random.choice(glob.glob("./laptop_images/*"))
+    log_text(str(laptop_image_path), bot)
+    with open(laptop_image_path, 'rb') as f:
+        bot.send_sticker(update.message.chat_id, f)
+    
     # todo: send pin image
 
 def echo(update, context):
