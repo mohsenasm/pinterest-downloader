@@ -228,9 +228,12 @@ def get_pin_info(pin_id, arg_timestamp_log, url_path
     scripts = []
     is_success = False
     image = None
-    for t in (15, 30, 40, 50, 60):
-        #print('https://www.pinterest.com/pin/{}/'.format(pin_id))
-        
+    for t in (15, 30, 40, 50, 60, 120, 250, 500):
+        # print('https://www.pinterest.com/pin/{}/'.format(pin_id))
+        # comment the next block to add video data
+        if is_success:
+            break
+
         try:
             with open(cookie_file) as f:
                 rawdata = f.read()
@@ -261,8 +264,37 @@ def get_pin_info(pin_id, arg_timestamp_log, url_path
 
         indexErr = False
         for script in scripts:
+            # if 'imageSpec_orig' in script:
+            #     print("script:", script)
             try:
                 data = json.loads(script)
+                try:
+                    _image_url = data['response']['data']['v3GetPinQuery']['data']['imageSpec_orig']['url']
+                    print("found v3GetPinQuery:", _image_url)      
+                    _id = "an_id"
+                    _split = _image_url.split("/")
+                    if len(_split) > 0:
+                        _split = _split[-1].split(".")
+                        if len(_split) > 0:
+                            _id = _split[0]
+                    if image is None:
+                        image = {}
+                    image["id"] = _id
+                    image["images"] = {"orig": {"url": _image_url}}
+                    is_success = True
+                    # try:
+                    #     _video_urls = data['response']['data']['v3GetPinQuery']['data']['videos']['videoUrls']
+                    #     print("found v3GetPinQuery video_list:", _video_urls)      
+                    #     image["videos"] = {
+                    #         "video_list": _video_urls
+                    #     }
+                    #     break
+                    # except (TypeError, KeyError):
+                    #     pass
+                    break
+                except (TypeError, KeyError):
+                    if "v3GetPinQuery" in script:
+                        print("error in exracting info from v3GetPinQuery:", script)
                 if 'props' in data:
                     pins = data['props']['initialReduxState']['pins']
                     try:
