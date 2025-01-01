@@ -51,17 +51,13 @@ async def free_text(update, context):
     bot = update.get_bot()
     laptop_image_path = random.choice(glob.glob("./laptop_images/*"))
     with open(laptop_image_path, 'rb') as f:
-        bot.send_sticker(update.message.chat_id, f)
+        await bot.send_sticker(update.message.chat_id, f)
     link = find_link(update.message.text)
     if link:
         file_paths, download_dir = download_link(link)
-        # log_text("file_paths: " + str(file_paths), bot)
         for file_path in file_paths:
-            # log_text("sending: " + str(file_path), bot)
             with open(file_path, 'rb') as f:
-                bot.send_document(update.message.chat_id,
-                                  document=f, filename=Path(file_path).name)
-        # log_text("removing after 10min: " + download_dir, bot)
+                await bot.send_document(update.message.chat_id, document=f, filename=Path(file_path).name)
         Thread(target=delyed_remove_dir, args=(10*60, download_dir)).start()
 
 
